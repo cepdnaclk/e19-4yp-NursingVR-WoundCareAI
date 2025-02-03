@@ -1,6 +1,5 @@
 {
-
-    "title": "Nursing VR WoundCare AI"
+    "title": "Nursing VR WoundCare AI",
     "team": [
         {
             "name": "Kavindu Bambaragama",
@@ -22,8 +21,7 @@
         {
             "name": "Ms. Yasodha Vimukthi",
             "email": "yasodhav@eng.pdn.ac.lk"
-        },
-
+        }
     ],
     "media": [
         {
@@ -32,5 +30,10 @@
             "url": "#"
         }
     ],
-    "tags": ["Final Year Projects", "VR",  "Nusing", "Woundcare Education"]
+    "tags": [
+        "Final Year Projects",
+        "VR",
+        "Nusing",
+        "Woundcare Education"
+    ]
 }
