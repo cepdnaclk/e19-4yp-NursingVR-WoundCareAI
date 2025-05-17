@@ -1,13 +1,8 @@
 import fs from "fs";
 import OpenAI from "openai";
 import "dotenv/config";
-const openai = new OpenAI({
+const client = new OpenAI({
   apiKey: process.env.OPEN_AI_API_KEY,
-});
-
-const file = await client.files.create({
-  file: fs.createReadStream("draconomicon.pdf"),
-  purpose: "user_data",
 });
 
 const completion = await client.chat.completions.create({
@@ -19,16 +14,17 @@ const completion = await client.chat.completions.create({
         {
           type: "file",
           file: {
-            file_id: file.id,
+            file_id: "file-EBvboLPZgLs2EE3i1agkj6",
           },
         },
         {
           type: "text",
-          text: "What is the first dragon in the book?",
+          text: "what is software engineering?",
         },
       ],
     },
   ],
+  max_tokens: 1000,
 });
 
 console.log(completion.choices[0].message.content);

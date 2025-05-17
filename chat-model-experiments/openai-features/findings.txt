@@ -1,0 +1,7 @@
+file input api is also good, gives correct answers for,
+    bullet points,
+    brief descriptions (summery of sections)
+    single answer questions
+functions can be used to support model to get a decision.
+comilations + message array can be used to maintain the status.
+repsonse api + previous id can be used to maintain the status.
