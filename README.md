@@ -1,7 +1,6 @@
 ___
-# DELETE THIS INSTRUCTIONS AND ADD A SHORT INTRODUCTION ABOUT YOUR PROJECT
+# Branching Stratergy 
 ___
-
-## Please refer the instructions in below URL:
+branch name template - {contributer name}/{type(experiment or implementation)}/{branch descriptive name}
 
 https://projects.ce.pdn.ac.lk/docs/how-to-add-a-project
