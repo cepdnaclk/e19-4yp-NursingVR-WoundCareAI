@@ -1,0 +1,19 @@
+Note: Llama 3-8b did not get the right answer because it was asked to answer in one word.
+
+Llama 2 often needs encouragement for step by step thinking to correctly reasoning. Llama 3 understands,
+reasons and explains better, making chain of thought unnecessary in the cases above.
+
+
+Vector embeddings 
+
+How RAG happens in LLama? 
+
+when pdf is given, it is splitted into smaller chunks. then converted to numaric vectors using a sentence transformer.
+this is stored in vector_store.
+when user ask question, it is also converted to numaric vectors. then top k vectors similar to that are retrived and send
+to LLM as context along with the quesiton. then it will process and give the output.
+
+
+We can use GRQ, TOGETHER AI like tools for communicate with llm over an api.
+
+Overall experimented with  llama-3-70b and 8b. Results are not that good. 
