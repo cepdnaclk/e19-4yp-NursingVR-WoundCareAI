@@ -11,7 +11,7 @@ api_key = os.getenv("GROQ_API_KEY")
 unique_id = datetime.datetime.now().strftime("%Y_%m%d_%H_%M")
 unique_filename = f"recordings/audio_{unique_id}.wav"
 
-record_audio(duration=20, filename=unique_filename)
+record_audio(duration=5, filename=unique_filename)
 play_audio(unique_filename)
 
 flac_filename=unique_filename.rsplit('.', 1)[0] + '.flac'
