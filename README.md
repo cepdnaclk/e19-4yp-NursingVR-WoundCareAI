@@ -1,7 +1,6 @@
-___
-# DELETE THIS INSTRUCTIONS AND ADD A SHORT INTRODUCTION ABOUT YOUR PROJECT
-___
-
-## Please refer the instructions in below URL:
-
-https://projects.ce.pdn.ac.lk/docs/how-to-add-a-project
+This branch is for 
+-testing with different unity models
+-building a connection api gateway and send and recieve data and display data in unity VR
+-Different test folders will be made for each and run for testing respectively
+-when adding remember not to add the library folders can mention them in a text file
+-
