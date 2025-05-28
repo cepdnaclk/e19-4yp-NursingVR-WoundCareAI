@@ -9,7 +9,7 @@ title:
 
 [comment]: # "This is the standard layout for the project, but you can clean this and use your own template"
 
-# Project Title
+# Immersive AI-Driven Nursing Education: A Multimodal Integration of VR Simulations and Conversational Language Models For Advanced Wound Care Training
 
 #### Team
 
@@ -44,7 +44,44 @@ This is a sample image, to show how to add images to your page. To learn more op
 
 ## Abstract
 
+<p align='justify'>
+  Nursing education requires immersive, hands-on training to develop critical clinical 
+skills, particularly in advanced wound care. Traditional teaching methods, such as lecturebased instruction and task-oriented training, often fail to provide the level of interactivity and 
+realism necessary for mastering these complex procedures. This research explores the 
+integration of Virtual Reality (VR) simulations and Artificial Intelligence (AI) driven 
+conversational models to enhance nursing education. By leveraging VR, students can engage 
+in realistic, interactive scenarios that simulate clinical environments, while AI driven 
+conversational agents provide real-time feedback and personalized guidance. 
+</p>
+
 ## Related works
+<p align='justify'>
+  Recent research has shown promising results in the integration of Virtual Reality (VR) and conversational Artificial Intelligence (AI) for healthcare education, particularly in nursing. Various studies have explored the use of VR to create immersive, risk-free training environments that enhance learning outcomes such as knowledge retention, engagement, confidence, and psychomotor skill development.
+</p>
+
+### Use of VR in Nursing Education
+<p align='justify'>Prior work has explored the effectiveness of VR in simulating realistic clinical scenarios. Tools such as vSim, Shadow Health, and Oxford Medical Simulation have been adopted in nursing programs, allowing learners to repeatedly engage with clinical content. According to those research papers, notable challenges include high implementation costs, insufficient realism, and technical complexities.</p>
+
+### Conversational AI
+<p align='justify'>
+  The use of conversational AI in VR simulations has been explored to improve interactivity and realism. In previous work has done, open-source frameworks like RASA and Dialogflow have been implemented for building dialogue systems. Recent developments involve fine-tuning large language models (LLMs) such as GPT and LLaMA to simulate clinically relevant conversations. While these systems show potential for personalization and natural interaction, they often face issues related to hallucination, high resource usage, and inconsistent performance in domain-specific tasks. The below table includes overview of methodologies used to create conversational AIs.
+</p>
+
+![Screenshot](images/example.png)
+
+
+### Text-To-Speech (TTS) and Speech-To-Text (STT) Systems 
+<p align='justify'>
+Text-To-Speech (TTS) and Speech-To-Text (STT) technologies are essential for enabling natural verbal interaction in virtual and augmented reality training systems. In nursing and medical training, they support voice-based communication, making simulations more realistic and immersive.Recent research has explored the use of STT systems such as OpenAI’s Whisper and Facebook’s Wav2Vec2.0 for accurate speech recognition. These models offer improved performance over traditional systems, especially in handling accents and domain-specific language. Similarly, TTS tools like Google TTS, Amazon Polly, and open-source alternatives such as Coqui TTS enable the system to respond using natural-sounding speech, improving the overall user experience.
+
+These systems are particularly useful in hands-free environments like VR, allowing users to focus on tasks while interacting verbally with the system. However, challenges remain, including difficulties with background noise, medical jargon, and emotional tone in synthesized voices.In summary, integrating TTS and STT enhances the realism and usability of healthcare training applications. While current tools offer strong capabilities, continued improvement is needed to fully match the complexity of real-life clinical communication.
+</p>
+
+
+<p align='justify'></p>
+<p align='justify'></p>
+
+
 
 ## Methodology
 
