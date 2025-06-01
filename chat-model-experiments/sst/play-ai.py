@@ -15,8 +15,8 @@ filepath= os.path.join(os.path.dirname(__file__), unique_filename)
 
 speech_file_path = filepath
 model = "playai-tts"
-voice = "Angelo-PlayAI"
-text = "I love building and shipping new features for our users!"
+voice = "Adelaide-PlayAI"
+text = "Lately I’ve been feeling very tired, even after getting a full night's sleep. I'm always thirsty, and I need to go to the bathroom a lot. I’ve also noticed that I’ve been losing weight without trying, and sometimes my vision gets blurry."
 response_format = "wav"
 
 client = Groq(api_key=api_key)
@@ -29,3 +29,5 @@ response = client.audio.speech.create(
 )
 
 response.write_to_file(speech_file_path)
+
+play_audio(speech_file_path)
