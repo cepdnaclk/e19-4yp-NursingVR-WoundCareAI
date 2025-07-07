@@ -18,11 +18,11 @@ async def protected_route(current_user: Annotated[str, Depends(get_current_activ
     return {"message": "This is a protected route, you have access!"}   
 
 
-# @router.get('/')
-# async def get_html():
-#     return HTMLResponse(html)  
-
 @router.get('/')
+async def get_html():
+    return HTMLResponse(html)  
+
+@router.get('/mcq')
 async def get_html_mcq():
     return HTMLResponse(html_mcq)
 

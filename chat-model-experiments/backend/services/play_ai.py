@@ -1,6 +1,7 @@
 import os 
 from dotenv import load_dotenv
 from groq import Groq
+import time
 
 import io
 
@@ -16,14 +17,14 @@ response_format = "wav"
 client = Groq(api_key=api_key)
 
 def text_to_speech_and_play(text, model="playai-tts", voice="Adelaide-PlayAI", response_format="wav"):
+    print("start_T",  time.time())
     response = client.audio.speech.create(
         model=model,
         voice=voice,
         input=text,
         response_format=response_format
     )
-
-    print(f"Response from PlayAI TTS: {response}")
+    print("end_T",  time.time())
     # If response has a .content or .read() method, use it; otherwise, use response directly
     if hasattr(response, "content"):
         audio_data = response.content
@@ -40,4 +41,3 @@ def text_to_speech_and_play(text, model="playai-tts", voice="Adelaide-PlayAI", r
     # Try to play from memory
     audio_file_like = io.BytesIO(audio_data)
     audio.play_audio(audio_file_like)
-

@@ -1,6 +1,7 @@
 from fastapi import WebSocket, APIRouter, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from io import BytesIO
+import time
 
 from services.whisper import send_audio_to_whisper
 from services.response_api import talk_to_llm   
@@ -23,13 +24,15 @@ async def websocket_endpoint(websocket: WebSocket):
             message = await websocket.receive()
             if "bytes" in message:
                 audio_bytes = message["bytes"]
+                print("start",  time.time())
                 text = send_audio_to_whisper(BytesIO(audio_bytes), filename="audio.wav")
+                print("end",  time.time())
                 response = talk_to_llm(previous_response_id=previous_response_id, input_text=text)
                 print(f"Response from LLM: {response.output_text}")
                 previous_response_id = response.id
 
                 text_to_speech_and_play(response.output_text)
-
+                
                 await websocket.send_text("Audio file received and processed!")
             elif "text" in message:
                 await websocket.send_text(f"Text message received: {message['text']}")
