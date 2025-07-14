@@ -1,6 +1,7 @@
 import asyncio
 import random
-
+import os
+from dotenv import load_dotenv
 import numpy as np
 import sounddevice as sd
 
@@ -16,6 +17,7 @@ from agents.voice import (
 )
 from agents.extensions.handoff_prompt import prompt_with_handoff_instructions
 
+load_dotenv()
 
 @function_tool
 def get_weather(city: str) -> str:

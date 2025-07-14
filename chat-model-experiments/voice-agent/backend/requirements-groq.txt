@@ -1,0 +1,5 @@
+# Additional requirements for Groq Whisper STT
+httpx>=0.24.0
+
+# Add this to your .env file:
+# GROQ_API_KEY=your_groq_api_key_here

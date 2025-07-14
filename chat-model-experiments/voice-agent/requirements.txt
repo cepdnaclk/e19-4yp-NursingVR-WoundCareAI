@@ -1,0 +1,10 @@
+numpy
+openai-agents
+openai-agents['voice']
+fastapi
+uvicorn
+python-dotenv
+# Audio processing
+soundfile
+scipy
+librosa

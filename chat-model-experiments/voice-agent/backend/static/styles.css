@@ -1,0 +1,93 @@
+/* Voice Agent Frontend Styles */
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.container {
+    text-align: center;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 90%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+#recordButton {
+    padding: 20px 40px;
+    font-size: 18px;
+    border: none;
+    border-radius: 50px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+#recordButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+#recordButton.recording {
+    background-color: #f44336;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+#status {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #666;
+    min-height: 20px;
+}
+
+#status.error {
+    color: #f44336;
+}
+
+#status.success {
+    color: #4CAF50;
+}
+
+#status.processing {
+    color: #ff9800;
+}
+
+#audioPlayer {
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    #recordButton {
+        padding: 15px 30px;
+        font-size: 16px;
+    }
+}
