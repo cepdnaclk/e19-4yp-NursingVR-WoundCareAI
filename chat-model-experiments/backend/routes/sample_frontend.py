@@ -33,11 +33,19 @@ html = """
         <title>Chat 1.0</title>
     </head> 
     <body>
-        <h1>WebSocket Chat</h1>
+        <h1>WebSocket Chat 2</h1>
 
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button id="recordBtn" type="button">Record</button>
-            <button id="stopBtn" type="button" disabled>Stop</button>
+        <h2>Audio Chat Agent</h2>
+        <input type="text" id="messageText" autocomplete="off"/>
+        <button id="recordBtn" type="button">Record</button>
+        <button id="stopBtn" type="button" disabled>Stop</button>
+
+        <h2>MCQ Agent</h2>
+        <button id="sendBtn" type="button">Send MCQ Test</button>
+
+        <h2>Agent 2</h2>
+        <button id="recordAgent2Btn" type="button">Record Agent2</button>
+        <button id="stopAgent2Btn" type="button" disabled>Stop Agent2</button>
 
         <ul id='messages'>
         </ul>

@@ -1,0 +1,29 @@
+# FastAPI and related dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# Authentication and security
+PyJWT>=2.8.0
+passlib[bcrypt]>=1.7.4
+python-multipart>=0.0.6
+
+# Data validation
+pydantic>=2.5.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# OpenAI API client
+openai>=1.3.0
+
+# Groq API client
+groq>=0.4.0
+
+# Audio processing
+sounddevice>=0.4.6
+scipy>=1.11.0
+soundfile>=0.12.1
+numpy>=1.24.0
+
+# Static file serving (included with FastAPI)
+aiofiles>=23.0.0
