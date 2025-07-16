@@ -6,7 +6,7 @@ from typing import Dict, Any
 from services.response_api import talk_to_llm
 
 class QuestionLogger:
-    def __init__(self, log_file_path: str = "logs/nursing_questions_log.json", system_prompt: str = "" ):
+    def __init__(self, log_file_path: str, system_prompt: str = "" ):
         # Create logs directory if it doesn't exist
         log_dir = os.path.dirname(log_file_path)
         if log_dir and not os.path.exists(log_dir):
@@ -21,7 +21,6 @@ class QuestionLogger:
         Returns True if they match, False otherwise.
         """
         try:
-            
             print(f"[Logger] Validating interaction: {validation_input}")
             validation_response = talk_to_llm(
                 input_text=validation_input,
@@ -38,28 +37,29 @@ class QuestionLogger:
             print(f"[Logger] Validation error: {e}")
             return False
     
-    def _log_interaction_thread(self, user_question: str, llm_response: str, agent_type: str):
+    def _log_interaction_thread(self, user_question: str, llm_response: str, conversation_type: str) -> None:
         """
         Internal method to handle validation and logging in a separate thread.
         """
         try:
             input = ""
 
-            if agent_type == 'patient_conversation':
+            if conversation_type == 'patient_conversation':
                 input = f"""Nurse's Question: {user_question} Patient's Response: {llm_response}"""
-            elif agent_type == 'staff_nurse_conversation':
+            elif conversation_type == 'staff_nurse_conversation':
                 input = f"""Student nurse's Question: {user_question} Staff nurse's Response: {llm_response}"""
             else:
-                print(f"[Logger] Unknown agent type: {agent_type}")
+                print(f"[Logger] Unknown agent type: {conversation_type}")
                 return
 
             # Validate the interaction using LLM
             if not self.validate_interaction(input):
+                print(f"[Logger] Validation failed for interaction: {conversation_type}")
                 return
                 
             interaction_data = {
                 "timestamp": datetime.now().isoformat(),
-                "agent_type": agent_type,
+                "conversation_type": conversation_type,
                 "user_question": user_question,
                 "llm_response": llm_response
             }
@@ -83,6 +83,7 @@ class QuestionLogger:
                 
         except Exception as e:
             print(f"[Logger] Error in background logging: {e}")
+            return
     
     def log_interaction(self, user_question: str, llm_response: str, agent_type: str) -> None:
         """
@@ -93,6 +94,66 @@ class QuestionLogger:
         thread = threading.Thread(
             target=self._log_interaction_thread,
             args=(user_question, llm_response, agent_type),
+            daemon=True
+        )
+        thread.start()
+    
+    def _log_single_variable_thread(self, variable_name: str) -> None:
+        """Internal method to handle variable logging in a separate thread."""
+        try:
+            # Use custom path or default
+            file_path = self.log_file_path
+            print(f"[Logger] Logging variable '{variable_name}' to {file_path}")
+            
+            # Load existing data or create new list
+            if os.path.exists(file_path):
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        print(f"[Logger] Loaded existing log data: {len(data)} entries")
+                except (json.JSONDecodeError, FileNotFoundError):
+                    data = []
+            else:
+                data = []
+            
+            # Find existing entry for this variable name
+            found_entry = None
+            for entry in data:
+                if entry.get('variable_name') == variable_name:
+                    found_entry = entry
+                    break
+            
+            if found_entry:
+                # Update existing entry by incrementing value
+                found_entry['value'] += 1
+                found_entry['timestamp'] = datetime.now().isoformat()  # Update timestamp
+                print(f"[Logger] Updated existing variable '{variable_name}' to value: {found_entry['value']}")
+            else:
+                # Create new entry if not found
+                new_entry = {
+                    "variable_name": variable_name,
+                    "value": 1
+                }
+                data.append(new_entry)
+                print(f"[Logger] Created new variable '{variable_name}' with value: 1")
+            
+            # Save updated data
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+                
+            print(f"[Logger] Successfully logged variable '{variable_name}'")
+            
+        except Exception as e:
+            print(f"[Logger] Error logging variable: {e}")
+            return
+             
+    def log_single_variable(self, variable_name: str) -> None:
+        """Log a single variable to JSON file in a separate thread."""
+        print(f"[Logger] Starting to log variable: {variable_name}")
+        # Start logging in a separate thread
+        thread = threading.Thread(
+            target=self._log_single_variable_thread,
+            args=(variable_name,),
             daemon=True
         )
         thread.start()
@@ -114,12 +175,13 @@ class QuestionLogger:
             }
             
             for interaction in data:
-                agent = interaction.get('agent_type', 'unknown')
+                agent = interaction.get('conversation_type', 'unknown')
                 if agent not in stats['agents']:
                     stats['agents'][agent] = 0
                 stats['agents'][agent] += 1
                 
             return stats
+            
         except Exception as e:
             print(f"[Logger] Error reading log stats: {e}")
             return {"total_interactions": 0, "agents": {}}

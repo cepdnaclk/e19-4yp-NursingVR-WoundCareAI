@@ -2,14 +2,16 @@ from fastapi import WebSocket, APIRouter, WebSocketDisconnect
 import json
 
 from services.chat_with_docs import talk_to_llm   
-from services.play_ai import text_to_speech_and_play
-from services.gpt_tts import text_to_speech_and_play_openai
+from services.play_ai import text_to_speech_bytes
+from services.question_logger import QuestionLogger
 
 from data.system_prompt_mcq import system_prompt
+from models.evaluation_models import MCQFeedback
 
 
 # MCQ chat ws
-FILE_ID = "file-UTGTAsAD4G9XSfAasxYqRj"  # Example file ID, replace with actual file ID if needed
+FILE_ID = "file-SojR7yGezXDhFY5Fpyqgtm"  
+LOG_FILE_PATH = "logs/main_log.json"
 
 router = APIRouter()
 
@@ -17,6 +19,8 @@ router = APIRouter()
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     print("MCQ WebSocket connection established")
+    
+    logger = QuestionLogger(log_file_path=LOG_FILE_PATH)
 
     try:
         while True:
@@ -26,17 +30,25 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 data = json.loads(message)
                 questionId = data.get("questionId")
-                question = data.get("question")
                 answer = data.get("answer")
                 
                 print(f"Processing MCQ - ID: {questionId}, Answer: {answer}")
                 
-                response = talk_to_llm(input_text=f"Question number: {questionId} Answer: {answer}", system_prompt=system_prompt, file_id = FILE_ID)
-                print(f"Response from LLM: {response.output_text}")
+                response = talk_to_llm(input_text=f"Question number: {questionId} Answer: {answer}", 
+                                       system_prompt=system_prompt, file_id = FILE_ID, response_format=MCQFeedback)
+
+                parsed_response = response.output_parsed if hasattr(response, 'output_parsed') else response.dict()
+                print(f"MCQ response: {parsed_response}")
                 
-                text_to_speech_and_play_openai(response.output_text)
-                
-                await websocket.send_text(f"MCQ processed: {response.output_text}")
+                # log mcq correct answer
+                if parsed_response.correct == True:
+                    logger.log_single_variable(variable_name="correct_answers")
+                                                       
+                 # Generate audio and send to frontend
+                audio_bytes = text_to_speech_bytes(parsed_response.feedback)
+                    
+                    # Send audio to frontend
+                await websocket.send_bytes(audio_bytes)
                 
             except WebSocketDisconnect:
                 print("MCQ WebSocket disconnected")

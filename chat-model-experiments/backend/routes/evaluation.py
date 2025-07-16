@@ -1,12 +1,15 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import JSONResponse, Response
 import json
 import os
 from typing import Optional, List, Dict, Any
 
-
 from services.chat_with_docs import talk_to_llm
-from data.system_prompt_final_ev import qanda
+from services.play_ai import text_to_speech_bytes
+from data.system_prompt_final_ev import qanda, remove_logs_system_prompt
+
+from models.evaluation_models import ConversationLog, FinalEvaluationResult
+from utils.conversions import convert_pydantic_to_str
 
 
 router = APIRouter()
@@ -15,17 +18,100 @@ router = APIRouter()
 EVALUATION_CONFIG = {
     "conversation": {
         "log_file": "logs/nursing_questions_log.json",
-        "system_prompt": qanda,
+        "system_prompt": [remove_logs_system_prompt, qanda],
         "file_id": "file-FkWmcQ72YcZLF9aZaDSMZ2"
     },
     "wound_assesment":{
         "log_file": "logs/nursing_questions_log.json",
         "system_prompt": "sss",
-        "file_id": "file-VbYLyGHrYZcqirh1ZQBZnR"
+        "file_id": "file-FkWmcQ72YcZLF9aZaDSMZ2"
     }
 }
 
+NUMBER_OF_QUESTIONS = 8
+FILE_PATH_MCQ = "logs/main_log.json"
 
+@router.post("/evaluate/patient-conversation")
+async def evaluate_patient_conversation(agent_filter: Optional[str] = "history"):
+    """Evaluate patient conversation logs"""
+    try:
+        # Load log file
+        logs = load_log_file(EVALUATION_CONFIG["conversation"]["log_file"])
+               
+        if not logs:
+            return JSONResponse(
+                status_code=200,
+                content={"evaluation": "No logs found for evaluation"}
+            )
+        
+        # Format logs for evaluation
+        json_logs = json.dumps(logs, indent=2) 
+        
+        # Send to LLM for get filtered logs.
+        response = talk_to_llm(
+            input_text=json_logs,
+            system_prompt=EVALUATION_CONFIG["conversation"]["system_prompt"][0],
+            file_id=EVALUATION_CONFIG["conversation"]["file_id"],
+            response_format=ConversationLog
+        )
+
+        # access the response.logs from conversationLog object (Works only for this response format)
+        
+        filtered_logs =  response.output_parsed.logs if hasattr(response.output_parsed, 'logs') else response.dict()
+        
+        filtered_logs_str = convert_pydantic_to_str(filtered_logs)
+        print(filtered_logs_str)        
+        
+        # Send to LLM for final evaluation
+        response = talk_to_llm(
+            input_text=filtered_logs_str,
+            system_prompt=EVALUATION_CONFIG["conversation"]["system_prompt"][1],
+            file_id=EVALUATION_CONFIG["conversation"]["file_id"],
+            response_format=FinalEvaluationResult
+        )
+        
+        # Extract the parsed output and convert it to dict
+        evaluation_data = response.output_parsed.model_dump() if hasattr(response.output_parsed, 'model_dump') else response.output_parsed.dict()
+
+            
+        print(f"Evaluation Data: {evaluation_data['feedback']}")    
+        # Generate audio and send to frontend
+        audio_bytes = text_to_speech_bytes(evaluation_data['feedback'])
+        
+        
+        
+        # Send audio to frontend
+        return Response(
+            content=audio_bytes,
+            media_type="audio/mpeg",
+            headers={
+                "Content-Disposition": "attachment; filename=evaluation_feedback.mp3",
+                "X-Evaluation-Data": json.dumps(evaluation_data['feedback']) 
+            }
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Evaluation error: {str(e)}")
+
+@router.get("/evaluate/mcq")
+async def evaluate_mcq():
+    """Evaluate MCQ session"""
+    print("Evaluating MCQ session...")
+    correct_answers = get_variable_value(log_file_path=FILE_PATH_MCQ, variable_name="correct_answers")
+    
+    mcq_marks = (correct_answers/ NUMBER_OF_QUESTIONS) * 100 
+    
+    return JSONResponse(
+        status_code=200,
+        content={
+            "evaluation": "MCQ evaluation completed",
+            "marks": mcq_marks,
+            "feedback": f"You answered {correct_answers} out of {NUMBER_OF_QUESTIONS} questions correctly."
+        }
+    )
+    
 
 def load_log_file(file_path: str) -> List[Dict[str, Any]]:
     """Load and return log file contents"""
@@ -41,80 +127,26 @@ def load_log_file(file_path: str) -> List[Dict[str, Any]]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading log file: {str(e)}")
 
-def filter_logs_by_agent(logs: List[Dict[str, Any]], agent_type: str) -> List[Dict[str, Any]]:
-    """Filter logs by agent type"""
-    return [log for log in logs if log.get('agent_type') == agent_type]
 
-def format_logs_for_evaluation(logs: List[Dict[str, Any]]) -> str:
-    """Format logs into a readable text for LLM evaluation"""
-    formatted_text = "CONVERSATION LOGS FOR EVALUATION:\n\n"
-    
-    for i, log in enumerate(logs, 1):
-        formatted_text += f"--- Interaction {i} ---\n"
-        formatted_text += f"User Question: {log.get('user_question', 'N/A')}\n"
-        formatted_text += f"LLM Response: {log.get('llm_response', 'N/A')}\n\n"
-    
-    return formatted_text
-
-@router.post("/evaluate/patient-conversation")
-async def evaluate_patient_conversation(agent_filter: Optional[str] = "history"):
-    """Evaluate patient conversation logs"""
-    try:
-        # Load log file
-        logs = load_log_file(EVALUATION_CONFIG["conversation"]["log_file"])
-               
-        if not logs:
-            return JSONResponse(
-                status_code=200,
-                content={"evaluation": "No logs found for evaluation"}
-            )
+def get_variable_value(variable_name: str,  log_file_path: str) -> int:
+    """
+    Get the current value of a specific variable from the log file.
+    Uses the existing load_log_file function.
+    """
+    try:   
+        # Load data using the existing function
+        data = load_log_file(log_file_path)
         
-        # Format logs for evaluation (choose one of these options)
-        # Option 1: Readable format
-        formatted_logs = format_logs_for_evaluation(logs)
-        
-        # Option 2: JSON string format (uncomment to use)
-        # formatted_logs = json.dumps(logs, indent=2)
-        
-        # Send to LLM for evaluation
-        response = talk_to_llm(
-            input_text=formatted_logs,
-            system_prompt=EVALUATION_CONFIG["conversation"]["system_prompt"],
-            file_id=EVALUATION_CONFIG["conversation"]["file_id"],
-            response_format={"type": "json_object"}
-        )
-
-        print(f"Evaluation response: {response.output_text}")
-        
-        return JSONResponse(
-            status_code=200,
-            content={"evaluation": response.output_text}
-        )
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Evaluation error: {str(e)}")
-
-@router.get("/evaluate/available-agents")
-async def get_available_agents():
-    """Get list of available agent types from log files"""
-    try:
-        if not os.path.exists(EVALUATION_CONFIG["conversation"]["log_file"]):
-            return JSONResponse(
-                status_code=200,
-                content={"agents": []}
-            )
-        
-        logs = load_log_file(EVALUATION_CONFIG["conversation"]["log_file"])
-        
-        # Get unique agent types
-        agent_types = list(set(log.get('agent_type', 'unknown') for log in logs))
-        
-        return JSONResponse(
-            status_code=200,
-            content={"agents": agent_types}
-        )
+        # Find the variable entry
+        for entry in data:
+            if entry.get('variable_name') == variable_name:
+                value = entry.get('value', 0)
+                print(f"[Logger] Found variable '{variable_name}' with value: {value}")
+                return value
+                
+        print(f"[Logger] Variable '{variable_name}' not found in log file")
+        return 0
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error getting agent types: {str(e)}")
+        print(f"[Logger] Error getting variable value: {e}")
+        return 0

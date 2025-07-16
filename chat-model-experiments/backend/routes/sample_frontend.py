@@ -26,6 +26,10 @@ async def get_html():
 async def get_html_mcq():
     return HTMLResponse(html_mcq)
 
+@router.get('/evaluation')
+async def get_html_evaluation():
+    return HTMLResponse(html_evaluation)
+
 html = """
 <!DOCTYPE html>
 <html>
@@ -65,6 +69,20 @@ html_mcq = """
         <h1>WebSocket Chat</h1>
             <button id="sendBtn" type="button">Send Q&A</button>
         <script src="static/mcq_script.js"></script>
+    </body>
+</html>
+"""
+
+html_evaluation = """
+<!DOCTYPE html> 
+<html>
+    <head>
+        <title>Evaluation</title>
+    </head> 
+    <body>
+        <h1>Evaluation</h1>
+        <button id="evaluateBtn" type="button">Evaluate Patient Conversation</button>
+        <script src="static/evaluation_script.js"></script>
     </body>
 </html>
 """

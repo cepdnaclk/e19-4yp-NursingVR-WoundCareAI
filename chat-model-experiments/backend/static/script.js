@@ -67,7 +67,18 @@ wsMCQ.onopen = function(event) {
 };
 
 wsMCQ.onmessage = function(event) {
-    console.log('MCQ response from server:', event.data);
+    if (event.data instanceof Blob) {
+        // Handle audio data (binary data comes as Blob)
+        console.log('Received audio data, size:', event.data.size);
+        playAudioFromBlob(event.data);
+    } else if (event.data instanceof ArrayBuffer) {
+        // Handle audio data (if somehow comes as ArrayBuffer)
+        console.log('Received audio data as ArrayBuffer, size:', event.data.byteLength);
+        playAudioFromBytes(event.data);
+    } else {
+        // Handle text message
+        console.log('Text message:', event.data);
+    }
 };
 
 wsMCQ.onerror = function(error) {
@@ -279,9 +290,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sendBtn) {
         sendBtn.onclick = function () {
             console.log("Sending MCQ data to WebSocket server...");
-            const questionId = 2;
-            const answer = "Cleaning the wound with saline(Docsity)";
-            const question = "What is the first step in wound assessment?";
+            const questionId = 1;
+            const answer = "Surgical Wound";
+            const question = "What is the type of wound shown in the scenario? (Select all that apply)";
 
             const payload = {
                 questionId: questionId,

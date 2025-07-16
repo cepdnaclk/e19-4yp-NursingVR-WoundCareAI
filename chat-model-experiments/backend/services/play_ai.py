@@ -43,15 +43,15 @@ def text_to_speech_and_play(text, model="playai-tts", voice="Adelaide-PlayAI", r
     audio.play_audio(audio_file_like)
 
 def text_to_speech_bytes(text, model="playai-tts", voice="Adelaide-PlayAI", response_format="wav"):
+    
+    print(api_key)
     """Generate text-to-speech audio and return as bytes instead of playing"""
-    print("start_T",  time.time())
     response = client.audio.speech.create(
         model=model,
         voice=voice,
         input=text,
         response_format=response_format
     )
-    print("end_T",  time.time())
     
     # If response has a .content or .read() method, use it; otherwise, use response directly
     if hasattr(response, "content"):

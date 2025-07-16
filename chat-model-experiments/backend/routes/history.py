@@ -14,6 +14,7 @@ from data.system_prompt_evaluation import patient_convo
 
 # History gathering chat ws
 CONVERSATION_TYPE = 'patient_conversation'
+LOG_FILE_PATH = "logs/nursing_questions_log.json"
 
 router = APIRouter()
 
@@ -24,7 +25,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     try:
         previous_response_id = None
-        logger = QuestionLogger(system_prompt=patient_convo)
+        logger = QuestionLogger(log_file_path=LOG_FILE_PATH, system_prompt=patient_convo)
 
         while True:
             try:
@@ -59,9 +60,8 @@ async def websocket_endpoint(websocket: WebSocket):
                     previous_response_id = response.id
 
                     # Log interaction if it passes quality validation
-                    logged = logger.log_interaction(text, response.output_text, CONVERSATION_TYPE)
-                    if not logged:
-                        print(f"[History] Interaction not logged - quality validation failed")
+                    logger.log_interaction(text, response.output_text, CONVERSATION_TYPE)
+
                     
                     # Generate audio and send to frontend
                     audio_bytes = text_to_speech_bytes(response.output_text)

@@ -23,6 +23,7 @@ client = Groq(api_key=api_key)
 # print(filename)
 
 def send_audio_to_whisper(file_obj, filename="audio.wav"):
+    print(api_key)
 
     print(f"Sending {filename} to Whisper API...")
     if hasattr(file_obj, "read"):
