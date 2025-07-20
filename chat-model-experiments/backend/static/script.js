@@ -262,11 +262,13 @@ ws.onclose = function(event) {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize buttons as disabled until connections are established
     const sendBtn = document.getElementById("sendBtn");
+
+    //agent 2
     const recordAgent2Btn = document.getElementById("recordAgent2Btn");
     const stopAgent2Btn = document.getElementById("stopAgent2Btn");
     
     if (sendBtn) sendBtn.disabled = true;
-    if (recordAgent2Btn) recordAgent2Btn.disabled = true;
+    if (recordAgent2Btn) recordAgent2Btn.disabled = true; // Disable until WebSocket connects
     if (stopAgent2Btn) stopAgent2Btn.disabled = true;
 
     // Original audio chat button handlers
@@ -274,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const stopBtn = document.getElementById("stopBtn");
     
     if (recordBtn) {
-        console.log("Setting up Agent2 button handler");
         recordBtn.onclick = async function () {
             await startAudioRecording(ws, this, document.getElementById("stopBtn"));
         };
@@ -306,9 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Agent2 button handlers
     if (recordAgent2Btn) {
-        console.log("Setting up Agent2 button handler");
         recordAgent2Btn.onclick = async function () {
-            console.log("agent 2 button clicked");
             await startAudioRecording(wsStuffNurse, this, document.getElementById("stopAgent2Btn"));
         };
     }

@@ -6,6 +6,7 @@ import time
 from services.whisper import send_audio_to_whisper
 from services.response_api import talk_to_llm   
 from services.play_ai import text_to_speech_bytes   
+from services.gpt_tts import text_to_speech_bytes_openai, text_to_speech_bytes_openai_with_info
 from services.question_logger import QuestionLogger
 
 from data.sytem_prompt import system_prompt
@@ -13,7 +14,7 @@ from data.system_prompt_evaluation import patient_convo
 
 
 # History gathering chat ws
-CONVERSATION_TYPE = 'patient_conversation'
+MODEL = 'patient_model'
 LOG_FILE_PATH = "logs/nursing_questions_log.json"
 
 router = APIRouter()
@@ -60,11 +61,12 @@ async def websocket_endpoint(websocket: WebSocket):
                     previous_response_id = response.id
 
                     # Log interaction if it passes quality validation
-                    logger.log_interaction(text, response.output_text, CONVERSATION_TYPE)
+                    logger.log_interaction(text, response.output_text, MODEL)
 
                     
                     # Generate audio and send to frontend
                     audio_bytes = text_to_speech_bytes(response.output_text)
+                    # audio_bytes = text_to_speech_bytes_openai_with_info(response.output_text)
                     
                     # Send audio to frontend
                     await websocket.send_bytes(audio_bytes)

@@ -1,0 +1,162 @@
+[
+  {
+    "model": "patient_model",
+    "user_question": "Good morning! I’m Hasini, a nursing undergraduate from the University of Peradeniya."
+  },
+  {
+    "model": "patient_model",
+    "user_question": "May I know your name, please?"
+  },
+  {
+    "model": "patient_model",
+    "user_question": "How old are you?"
+  },
+  {
+    "model": "staff_nurse_model",
+    "user_question": "Miss, the doctor has ordered a dry dressing with surgical spirit for Mr Perera. May I proceed under your supervision?"
+  },
+  {
+    "model": "patient_model",
+    "user_question": "Mr Perera, the doctor has advised wound cleaning and dressing. This will help the wound recover better."
+  },
+  {
+    "model": "patient_model",
+    "user_question": "I'm going to begin the dressing now. Is that okay?"
+  },
+  {
+    "model": "patient_model",
+    "user_question": "First, I will inspect your wound."
+  },
+  {
+    "model": "staff_nurse_model",
+    "user_question": "Miss, could you please assist me?"
+  },
+  {
+    "model": "patient_model",
+    "user_question": "Would you like to go to the washroom before we start?"
+  },
+  {
+    "model": "patient_model",
+    "user_question": "Now I’m applying the dressing."
+  },
+  {
+    "timestamp": "2025-07-20T00:21:18.632914",
+    "model": "patient_model",
+    "user_question": " Hello."
+  },
+  {
+    "timestamp": "2025-07-20T00:21:40.954122",
+    "model": "patient_model",
+    "user_question": " How are you doing, good?"
+  },
+  {
+    "timestamp": "2025-07-20T00:51:44.561899",
+    "model": "patient_model",
+    "user_question": " Hello."
+  },
+  {
+    "timestamp": "2025-07-20T00:51:55.045787",
+    "model": "patient_model",
+    "user_question": " How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T00:52:33.517933",
+    "model": "patient_model",
+    "user_question": " I didn't hear what you said."
+  },
+  {
+    "timestamp": "2025-07-20T00:54:57.159529",
+    "model": "patient_model",
+    "user_question": " How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T00:58:42.472958",
+    "model": "patient_model",
+    "user_question": " Hello, how are you?"
+  },
+  {
+    "timestamp": "2025-07-20T01:07:19.410206",
+    "model": "patient_model",
+    "user_question": " Hello."
+  },
+  {
+    "timestamp": "2025-07-20T01:07:35.920876",
+    "model": "patient_model",
+    "user_question": " How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T01:07:59.720255",
+    "model": "patient_model",
+    "user_question": " Why did you come here today?"
+  },
+  {
+    "timestamp": "2025-07-20T01:08:42.753554",
+    "model": "patient_model",
+    "user_question": " Can you explain about yourself a bit?"
+  },
+  {
+    "timestamp": "2025-07-20T01:14:04.558713",
+    "model": "patient_model",
+    "user_question": " Hello, how are you?"
+  },
+  {
+    "timestamp": "2025-07-20T01:15:20.588505",
+    "model": "patient_model",
+    "user_question": " Hello. How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T01:17:50.185052",
+    "model": "patient_model",
+    "user_question": " Hello, Hawaii."
+  },
+  {
+    "timestamp": "2025-07-20T01:18:53.196157",
+    "model": "patient_model",
+    "user_question": " How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T01:19:27.367396",
+    "model": "patient_model",
+    "user_question": " What's going on?"
+  },
+  {
+    "timestamp": "2025-07-20T01:23:53.242091",
+    "model": "patient_model",
+    "user_question": " How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T01:25:51.525055",
+    "model": "patient_model",
+    "user_question": " Hello, what's going on?"
+  },
+  {
+    "timestamp": "2025-07-20T10:24:03.057015",
+    "model": "patient_model",
+    "user_question": " How are you?"
+  },
+  {
+    "timestamp": "2025-07-20T10:24:30.075364",
+    "model": "patient_model",
+    "user_question": " Hello, how are you?"
+  },
+  {
+    "timestamp": "2025-07-20T10:27:11.418922",
+    "model": "patient_model",
+    "user_question": " Hello, how are you?"
+  },
+  {
+    "timestamp": "2025-07-20T10:28:13.772912",
+    "model": "patient_model",
+    "user_question": " Hello, how are you?"
+  },
+  {
+    "timestamp": "2025-07-20T10:29:24.518656",
+    "model": "patient_model",
+    "user_question": " Hello, how are you?"
+  },
+  {
+    "timestamp": "2025-07-20T10:29:40.607298",
+    "model": "patient_model",
+    "user_question": " What's your name?"
+  }
+]

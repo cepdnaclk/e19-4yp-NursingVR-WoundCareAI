@@ -2,7 +2,7 @@ import json
 import os
 import threading
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, List
 from services.response_api import talk_to_llm
 
 class QuestionLogger:
@@ -44,9 +44,9 @@ class QuestionLogger:
         try:
             input = ""
 
-            if conversation_type == 'patient_conversation':
+            if conversation_type == 'patient_model':
                 input = f"""Nurse's Question: {user_question} Patient's Response: {llm_response}"""
-            elif conversation_type == 'staff_nurse_conversation':
+            elif conversation_type == 'staff_nurse_model':
                 input = f"""Student nurse's Question: {user_question} Staff nurse's Response: {llm_response}"""
             else:
                 print(f"[Logger] Unknown agent type: {conversation_type}")
@@ -59,9 +59,8 @@ class QuestionLogger:
                 
             interaction_data = {
                 "timestamp": datetime.now().isoformat(),
-                "conversation_type": conversation_type,
+                "model": conversation_type,
                 "user_question": user_question,
-                "llm_response": llm_response
             }
             
             # Load existing data or create new list
@@ -157,6 +156,69 @@ class QuestionLogger:
             daemon=True
         )
         thread.start()
+    
+    def is_log_file_available(self) -> bool:
+        try:
+            return os.path.exists(self.log_file_path) and os.path.isfile(self.log_file_path)
+        except Exception as e:
+            print(f"[Logger] Error checking file: {e}")
+            return False
+    
+    def create_log_file(self, initial_data: List[Dict[str, Any]] = None) -> bool:
+        try:        
+            # Use initial data or empty list
+            data = initial_data if initial_data is not None else []
+            
+            # Create and write to the file
+            with open(self.log_file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
+            
+            return True
+        
+        except Exception as e:
+            print(f"[Logger] Error creating log file: {e}")
+            return False
+    
+    def add_entry_to_file(self, variable_name: str, value: int):
+        """Add or update an entry in the log file"""
+        data = []
+        
+        if os.path.exists(self.log_file_path):
+            try:
+                with open(self.log_file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+            except (json.JSONDecodeError, FileNotFoundError):
+                data = []
+        else:
+            data = []
+        
+        # Find existing entry for this variable name
+        found_entry = None
+        for entry in data:
+            if entry.get('variable_name') == variable_name:
+                found_entry = entry
+                break
+        
+        if found_entry:
+            # Update existing entry with new value
+            found_entry['value'] = value
+            found_entry['timestamp'] = datetime.now().isoformat()  # Update timestamp
+            print(f"[Logger] Updated existing variable '{variable_name}' to value: {value}")
+        else:
+            # Create new entry if not found
+            new_entry = {
+                "variable_name": variable_name,
+                "value": value,
+                "timestamp": datetime.now().isoformat()  # Add timestamp for new entries
+            }
+            data.append(new_entry)
+            print(f"[Logger] Created new variable '{variable_name}' with value: {value}")
+        
+        # Save updated data
+        with open(self.log_file_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+            
+        print(f"[Logger] Successfully saved variable '{variable_name}' with value: {value}")
     
     def get_log_stats(self) -> Dict[str, Any]:
         """Get statistics about logged interactions."""

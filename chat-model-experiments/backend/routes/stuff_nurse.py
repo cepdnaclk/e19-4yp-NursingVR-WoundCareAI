@@ -10,7 +10,8 @@ from data.system_prompt_staff_nurse import system_prompt
 from data.system_prompt_evaluation import staff_nurse_convo
 
 FILE_ID = "file-VbYLyGHrYZcqirh1ZQBZnR"
-CONVERSATION_TYPE = 'staff_nurse_conversation'
+MODEL = 'staff_nurse_model'
+LOG_FILE_PATH = "logs/nursing_questions_log.json"
 
 router = APIRouter()
 
@@ -20,7 +21,7 @@ async def stuff_nurse_websocket(websocket: WebSocket):
     print("Stuff Nurse WebSocket connection established")
     
     previous_response_id = None
-    logger = QuestionLogger(system_prompt=staff_nurse_convo)
+    logger = QuestionLogger(system_prompt=staff_nurse_convo, log_file_path=LOG_FILE_PATH)
     
     try:
         while True:
@@ -40,7 +41,7 @@ async def stuff_nurse_websocket(websocket: WebSocket):
                     response_text = response.output_text
                     print(f"Stuff Nurse LLM response: {response_text}")
 
-                    logger.log_interaction(text, response_text, CONVERSATION_TYPE)
+                    logger.log_interaction(text, response_text, MODEL)
 
                     audio_bytes = text_to_speech_bytes(response_text)
 

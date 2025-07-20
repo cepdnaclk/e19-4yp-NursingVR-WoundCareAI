@@ -67,4 +67,42 @@ def text_to_speech_bytes(text, model="playai-tts", voice="Adelaide-PlayAI", resp
                 audio_data = f.read()
             os.unlink(tmp.name)
     
+    # Analyze audio properties (optional - remove in production)
+    analyze_audio_properties(audio_data)
+    
     return audio_data
+
+def analyze_audio_properties(audio_data):
+    """Analyze the audio properties of the WAV data"""
+    import wave
+    import io
+    
+    try:
+        # Create a BytesIO object from the audio data
+        audio_buffer = io.BytesIO(audio_data)
+        
+        # Open as WAV file
+        with wave.open(audio_buffer, 'rb') as wav_file:
+            sample_rate = wav_file.getframerate()
+            channels = wav_file.getnchannels()
+            sample_width = wav_file.getsampwidth()  # bytes per sample
+            bit_depth = sample_width * 8
+            duration = wav_file.getnframes() / sample_rate
+            
+            print(f"Audio Properties:")
+            print(f"  Sample Rate: {sample_rate} Hz")
+            print(f"  Channels: {channels}")
+            print(f"  Bit Depth: {bit_depth} bits")
+            print(f"  Sample Width: {sample_width} bytes")
+            print(f"  Duration: {duration:.2f} seconds")
+            
+            return {
+                'sample_rate': sample_rate,
+                'channels': channels,
+                'bit_depth': bit_depth,
+                'sample_width': sample_width,
+                'duration': duration
+            }
+    except Exception as e:
+        print(f"Error analyzing audio: {e}")
+        return None

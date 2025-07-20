@@ -1,4 +1,5 @@
 import json
+from typing import List
 
 def convert_pydantic_to_str(filtered_logs):
 
@@ -20,3 +21,15 @@ def convert_pydantic_to_str(filtered_logs):
         filtered_logs_str = str(filtered_logs)
     
     return filtered_logs_str
+
+def generate_simple_step_status_text(matrix: List[bool]) -> str:
+    """Simple version without step names"""
+    if not matrix:
+        return "No steps defined."
+    
+    status_lines = []
+    for i, completed in enumerate(matrix):
+        status = "completed" if completed else "not completed"
+        status_lines.append(f"{i}. {status}")
+    
+    return ",\n".join(status_lines)
